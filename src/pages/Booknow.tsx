@@ -368,7 +368,7 @@ const BookingDetails = () => {
                 <p className="text-xs uppercase !text-gray-500 mb-1">Check In</p>
                 <button
                   onClick={() => setShowCheckInCalendar(!showCheckInCalendar)}
-                  className="font-semibold w-full text-left"
+                  className="font-semibold w-full text-left !bg-white"
                   aria-label="Select check-in date"
                 >
                   {formatDisplayDate(checkInDate)}
@@ -472,7 +472,7 @@ const BookingDetails = () => {
                 <p className="text-xs uppercase text-gray-500 mb-1">Check Out</p>
                 <button
                   onClick={() => setShowCheckOutCalendar(!showCheckOutCalendar)}
-                  className="font-semibold w-full text-left"
+                  className="font-semibold w-full !bg-white text-left"
                   aria-label="Select check-out date"
                 >
                   {formatDisplayDate(checkOutDate)}

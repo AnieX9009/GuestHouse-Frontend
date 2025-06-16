@@ -58,9 +58,9 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         {/* Back button with modern design */}
         <button
           onClick={() => (window.location.href = "/")}
-          className="absolute top-6 left-6 z-20 !bg-white/10 hover:bg-white/20 backdrop-blur-md p-3 rounded-full border border-white/20 transition-all shadow-lg"
+          className="absolute top-6 left-6 z-20 !bg-white hover:!bg-white/20 backdrop-blur-md p-3 rounded-full border border-white/20 transition-all shadow-lg"
         >
-          <FiArrowLeft className="w-5 h-5 text-white" />
+          <FiArrowLeft className="w-5 h-5 !text-black" />
         </button>
 
         {/* Decorative elements */}
@@ -218,7 +218,7 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
               <p className="text-gray-600">
                 Already have an account?{' '}
                 <a href="/login" className="text-blue-600 font-medium hover:underline">
-                  Sign in
+                  Log In
                 </a>
               </p>
             </div>
