@@ -142,7 +142,7 @@ const Header = ({ backgroundImage, onBookNow }: HeaderProps) => {
             >
               <button
                 onClick={toggleMobileMenu}
-                className="!text-white p-2 rounded-lg transition-colors duration-300 hover:bg-white/20"
+                className="!text-white !bg-black p-2 rounded-lg transition-colors duration-300 hover:bg-white/20"
                 aria-label="Toggle mobile menu"
               >
                 {isMobileMenuOpen ? (
@@ -154,7 +154,7 @@ const Header = ({ backgroundImage, onBookNow }: HeaderProps) => {
 
               {/* Mobile Menu Dropdown */}
               {isMobileMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 bg-black/90 backdrop-blur-md rounded-lg min-w-[200px] shadow-2xl border border-white/20">
+                <div className="absolute top-full right-0 mt-2 !bg-black/90 backdrop-blur-md rounded-lg min-w-[200px] shadow-2xl border border-white/20">
                   <div className="py-2">
                     {navigationItems.map((item) => (
                       <button
@@ -162,8 +162,8 @@ const Header = ({ backgroundImage, onBookNow }: HeaderProps) => {
                         onClick={() => handleNavigation(item.path)}
                         className={`block w-full text-left px-6 py-3 !text-white font-medium tracking-wide transition-all duration-300 hover:bg-amber-400/20 hover:text-amber-400 border-l-4 border-transparent ${
                           isActivePath(item.path)
-                            ? "bg-amber-400/10 border-amber-400 text-amber-400"
-                            : "hover:border-amber-400"
+                            ? "!bg-amber-400/10 border-amber-400 text-amber-400"
+                            : "hover:border-amber-400 !bg-amber-400/10"
                         }`}
                       >
                         {item.name}
@@ -246,15 +246,15 @@ const Header = ({ backgroundImage, onBookNow }: HeaderProps) => {
             isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <div className="text-center text-white">
+          <div className="text-center !text-white">
             <p className="text-xs sm:text-sm font-light tracking-widest mb-2 sm:mb-4">
               Scroll
             </p>
             <Button
               onClick={scrollToContent}
-              className="animate-bounce bg-white rounded-full w-10 sm:w-12 h-10 sm:h-12 hover:animate-none transition-all duration-300 hover:scale-110"
+              className="animate-bounce !bg-white rounded-full w-10 sm:w-12 h-10 sm:h-12 hover:animate-none transition-all duration-300 hover:scale-110"
             >
-              <ChevronDown className="w-5 sm:w-6 h-5 sm:h-6 mx-auto text-black hover:text-amber-400" />
+              <ChevronDown className="w-5 sm:w-6 h-5 sm:h-6 mx-auto !text-black hover:!text-amber-400" />
             </Button>
           </div>
         </div>

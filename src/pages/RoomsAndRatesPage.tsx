@@ -50,7 +50,7 @@ const RoomsAndRatesPage = () => {
           {ROOMS_DATA.map((room) => (
             <div
               key={room.id}
-              className="bg-white overflow-hidden border border-[#14274A] rounded-lg"
+              className="!bg-white overflow-hidden border border-[#14274A] rounded-lg"
             >
               {/* Room Image */}
               <div className="relative">
@@ -61,7 +61,7 @@ const RoomsAndRatesPage = () => {
                 />
 
                 {/* Room Title Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-slate-800 bg-opacity-90">
+                <div className="absolute bottom-0 left-0 right-0 !bg-slate-800 bg-opacity-90">
                   <div className="px-6 py-4">
                     <h2 className="text-white text-2xl md:text-3xl font-bold tracking-wider text-center">
                       {room.title}
@@ -71,16 +71,18 @@ const RoomsAndRatesPage = () => {
               </div>
 
               {/* Room Actions */}
-              <div className="px-6 py-6 flex justify-between items-center bg-gray-50">
-                
-                <Button onClick={goToRoomDetails} className="flex items-center gap-2 !text-[#14274A] hover:!text-amber-700 transition-colors font-medium !bg-transparent">
-                  <div className="bg-[#E0B973] rounded-full p-1">
+              <div className="px-6 py-6 flex flex-col sm:flex-row justify-between items-center !bg-gray-50 gap-4">
+                <Button 
+                  onClick={goToRoomDetails} 
+                  className="flex items-center gap-2 !text-[#14274A] hover:!text-amber-700 transition-colors font-medium !bg-transparent w-full sm:w-auto justify-center sm:justify-start"
+                >
+                  <div className="!bg-[#E0B973] rounded-full p-1">
                     <Plus className="w-4 h-4 text-white" />
                   </div>
-                  VIEW ROOM DETAILS
+                  <span className="whitespace-nowrap">VIEW ROOM DETAILS</span>
                 </Button>
 
-                <Button className="!bg-[#E0B973] hover:!bg-amber-600 !important text-white px-6 py-2 rounded font-medium transition-colors">
+                <Button className="!bg-[#E0B973] hover:!bg-amber-600 !important text-white px-6 py-2 rounded font-medium transition-colors w-full sm:w-auto">
                   {room.price}
                 </Button>
               </div>

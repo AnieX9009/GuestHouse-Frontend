@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FiInfo, FiPlus, FiMinus, FiChevronDown, FiX } from "react-icons/fi";
 import { FaStar, FaRegStar, FaCheck } from "react-icons/fa";
 import DatePicker from "react-datepicker";
@@ -60,7 +60,18 @@ const BookingDetails = () => {
   const [showCheckInCalendar, setShowCheckInCalendar] = useState<boolean>(false);
   const [showCheckOutCalendar, setShowCheckOutCalendar] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 768);
+  const { hash } = useLocation();
 
+  useEffect(() => {
+    if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView();
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [hash]);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -263,7 +274,7 @@ const BookingDetails = () => {
           <h1 className="text-xl sm:text-2xl font-bold text-blue-600">Booking Details</h1>
           <button
             onClick={() => navigate(-1)}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+            className="!text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center !bg-white"
             aria-label="Back to search"
           >
             <FiChevronDown className="transform rotate-90 mr-1" />
@@ -275,22 +286,22 @@ const BookingDetails = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Main Booking Card */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6 border border-gray-200">
+        <div className="!bg-white rounded-xl shadow-lg overflow-hidden mb-6 border !border-gray-200">
           {/* Hotel Info Section */}
           <div className="p-4 sm:p-6 md:p-8 flex flex-col md:flex-row gap-4 sm:gap-6 border-b">
             <div className="flex-1">
               <div className="flex flex-col md:flex-row justify-between gap-4 sm:gap-6">
                 <div className="flex-1">
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold !text-gray-900 mb-2">
                     {hotelBookings[0].hotelName}
                   </h2>
                   <div className="mb-3 flex items-center">
                     {renderStars(hotelBookings[0].stars)}
-                    <span className="ml-2 text-sm text-gray-600">
+                    <span className="ml-2 text-sm !text-gray-600">
                       {hotelBookings[0].stars}-star hotel
                     </span>
                   </div>
-                  <p className="text-gray-600 mb-4 flex items-start">
+                  <p className="!text-gray-600 mb-4 flex items-start">
                     <svg
                       className="w-4 h-4 mr-2 mt-1 flex-shrink-0"
                       fill="none"
@@ -321,11 +332,11 @@ const BookingDetails = () => {
                     className="w-full h-full object-cover rounded-lg"
                   />
                   <button
-                    className="absolute top-2 right-2 bg-white/90 p-1 rounded-full shadow-sm hover:bg-white transition"
+                    className="absolute top-2 right-2 !bg-white/90 p-1 rounded-full shadow-sm hover:!bg-white transition"
                     aria-label="Save hotel"
                   >
                     <svg
-                      className="w-5 h-5 text-gray-700"
+                      className="w-5 h-5 !text-gray-700"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -351,10 +362,10 @@ const BookingDetails = () => {
           </div>
 
           {/* Booking Dates Section */}
-          <div className="p-4 sm:p-6 md:p-8 border-b bg-gray-50">
+          <div className="p-4 sm:p-6 md:p-8 border-b !bg-gray-50">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="text-center md:text-left bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 w-full md:w-auto relative">
-                <p className="text-xs uppercase text-gray-500 mb-1">Check In</p>
+              <div className="text-center md:text-left !bg-white p-3 sm:p-4 rounded-lg shadow-sm border !border-gray-200 w-full md:w-auto relative">
+                <p className="text-xs uppercase !text-gray-500 mb-1">Check In</p>
                 <button
                   onClick={() => setShowCheckInCalendar(!showCheckInCalendar)}
                   className="font-semibold w-full text-left"
@@ -362,7 +373,7 @@ const BookingDetails = () => {
                 >
                   {formatDisplayDate(checkInDate)}
                 </button>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm !text-gray-500">
                   {hotelBookings[0].checkInTime}
                 </p>
                 {showCheckInCalendar && (
@@ -393,7 +404,7 @@ const BookingDetails = () => {
                     disabled={nights <= 1}
                     className={`p-1 rounded-full ${nights <= 1
                       ? "!bg-gray-200 !text-gray-400 cursor-not-allowed"
-                      : "!bg-blue-100 !text-blue-600 hover:bg-blue-200"
+                      : "!bg-blue-100 !text-blue-600 hover:!bg-blue-200"
                       }`}
                     aria-label="Decrease nights"
                   >
@@ -405,7 +416,7 @@ const BookingDetails = () => {
                     disabled={nights >= 30}
                     className={`p-1 rounded-full ${nights >= 30
                       ? "!bg-gray-200 text-gray-400 cursor-not-allowed"
-                      : "!bg-blue-100 text-blue-600 hover:bg-blue-200"
+                      : "!bg-blue-100 text-blue-600 hover:!bg-blue-200"
                       }`}
                     aria-label="Increase nights"
                   >
@@ -416,14 +427,14 @@ const BookingDetails = () => {
 
               <div className="md:hidden flex items-center justify-between w-full !bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200">
                 <div>
-                  <p className="text-xs uppercase text-gray-500">Nights</p>
+                  <p className="text-xs uppercase !text-gray-500">Nights</p>
                   <div className="flex items-center mt-1 space-x-3">
                     <button
                       onClick={handleRemoveNight}
                       disabled={nights <= 1}
                       className={`p-1 rounded-full ${nights <= 1
                         ? "!bg-gray-200 !text-gray-400 cursor-not-allowed"
-                        : "!bg-blue-100 !text-blue-600 hover:bg-blue-200"
+                        : "!bg-blue-100 !text-blue-600 hover:!bg-blue-200"
                         }`}
                       aria-label="Decrease nights"
                     >
@@ -485,8 +496,8 @@ const BookingDetails = () => {
 
             {/* Mobile Checkout Date Picker */}
             {isMobile && (
-              <div className="mt-4 bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 relative">
-                <p className="text-xs uppercase text-gray-500 mb-1">Check Out</p>
+              <div className="mt-4 !bg-white p-3 sm:p-4 rounded-lg shadow-sm border !border-gray-200 relative">
+                <p className="text-xs uppercase !text-gray-500 mb-1">Check Out</p>
                 <button
                   onClick={() => setShowCheckOutCalendar(!showCheckOutCalendar)}
                   className="font-semibold w-full text-left"
@@ -494,7 +505,7 @@ const BookingDetails = () => {
                 >
                   {formatDisplayDate(checkOutDate)}
                 </button>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm !text-gray-500">
                   {hotelBookings[0].checkOutTime}
                 </p>
                 {showCheckOutCalendar && (
@@ -525,13 +536,13 @@ const BookingDetails = () => {
                 <ul className="space-y-2 mb-4">
                   {hotelBookings[0].amenities.map((item, index) => (
                     <li key={index} className="flex items-start">
-                      <FaCheck className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                      <FaCheck className="!text-green-500 mr-2 mt-1 flex-shrink-0" />
                       <span className="text-gray-700">{item}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="bg-blue-50 p-3 sm:p-4 rounded-lg border border-blue-100">
-                  <p className="font-semibold text-gray-900 flex items-center">
+                <div className="!bg-blue-50 p-3 sm:p-4 rounded-lg border !border-blue-100">
+                  <p className="font-semibold !text-gray-900 flex items-center">
                     <svg
                       className="w-5 h-5 text-blue-500 mr-2"
                       fill="none"
@@ -604,13 +615,13 @@ const BookingDetails = () => {
             </div>
 
             {/* Right Section - Price Summary */}
-            <div className="lg:w-96 border-t lg:border-l p-4 sm:p-6 md:p-8 bg-gray-50">
+            <div className="lg:w-96 border-t lg:border-l p-4 sm:p-6 md:p-8 !bg-gray-50">
               <div className="sticky top-4 sm:top-8">
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">
                   Price Summary
                 </h3>
 
-                <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-5 mb-4 sm:mb-6 shadow-sm">
+                <div className="!bg-white border !border-gray-200 rounded-lg p-4 sm:p-5 mb-4 sm:mb-6 shadow-sm">
                   <div className="space-y-3 sm:space-y-4">
                     <div className="flex justify-between">
                       <div>
@@ -642,7 +653,7 @@ const BookingDetails = () => {
                     </div>
 
                     {appliedCoupon && (
-                      <div className="flex justify-between items-center bg-green-50 p-2 rounded">
+                      <div className="flex justify-between items-center !bg-green-50 p-2 rounded">
                         <div className="flex items-center">
                           <p className="font-medium text-green-800 mr-1">
                             Discount ({appliedCoupon.code})
@@ -668,7 +679,7 @@ const BookingDetails = () => {
                   </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-5 mb-4 sm:mb-6 shadow-sm">
+                <div className="!bg-white border !border-gray-200 rounded-lg p-4 sm:p-5 mb-4 sm:mb-6 shadow-sm">
                   <h4 className="font-semibold text-gray-800 mb-3">
                     Apply Coupon
                   </h4>
@@ -678,7 +689,7 @@ const BookingDetails = () => {
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                       placeholder="Enter coupon code"
-                      className="flex-1 border border-gray-300 rounded-l-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 border !border-gray-300 rounded-l-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       disabled={appliedCoupon !== null}
                       aria-label="Coupon code"
                     />
@@ -686,12 +697,12 @@ const BookingDetails = () => {
                       onClick={appliedCoupon ? handleRemoveCoupon : handleApplyCoupon}
                       disabled={isLoading || !couponCode.trim()}
                       className={`px-3 sm:px-4 py-2 rounded-r-lg transition-colors ${appliedCoupon
-                        ? "bg-red-500 hover:bg-red-600 text-white"
+                        ? "!bg-red-500 !hover:bg-red-600 !text-white"
                         : isLoading
-                          ? "bg-blue-400 text-white cursor-not-allowed"
+                          ? "!bg-blue-400 !text-white cursor-not-allowed"
                           : couponCode.trim()
-                            ? "bg-blue-600 hover:bg-blue-700 text-white"
-                            : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                            ? "!bg-blue-600 hover:!bg-blue-700 text-white"
+                            : "!bg-gray-200 text-gray-400 cursor-not-allowed"
                         }`}
                       aria-label={appliedCoupon ? "Remove coupon" : "Apply coupon"}
                     >
@@ -708,7 +719,7 @@ const BookingDetails = () => {
                     Try <span className="font-medium">DISCOUNT10</span> or{" "}
                     <span className="font-medium">DISCOUNT20</span>
                   </p>
-                  <div className="bg-yellow-50 text-yellow-800 text-xs p-2 rounded mt-3 text-center border border-yellow-100">
+                  <div className="!bg-yellow-50 text-yellow-800 text-xs p-2 rounded mt-3 text-center border !border-yellow-100">
                     MMT Gift Cards can be applied at payment step
                   </div>
                 </div>
@@ -744,11 +755,11 @@ const BookingDetails = () => {
         </div>
 
         {/* Guest Details Form */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6 border border-gray-200">
+        <div className="!bg-white rounded-xl shadow-lg overflow-hidden mb-6 border !border-gray-200">
           <div className="p-4 sm:p-6 md:p-8 border-b">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
               <svg
-                className="w-5 sm:w-6 h-5 sm:h-6 text-blue-500 mr-2"
+                className="w-5 sm:w-6 h-5 sm:h-6 !text-blue-500 mr-2"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -806,7 +817,7 @@ const BookingDetails = () => {
                       onChange={(e) =>
                         handleGuestChange(index, "title", e.target.value)
                       }
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-8 appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full border !border-gray-300 rounded-lg px-4 py-3 pr-8 appearance-none !bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="MR">Mr</option>
                       <option value="MRS">Mrs</option>
@@ -824,7 +835,7 @@ const BookingDetails = () => {
                         handleGuestChange(index, "firstName", e.target.value)
                       }
                       placeholder="First Name *"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full border !border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:!border-blue-500"
                       required
                     />
                   </div>
@@ -837,7 +848,7 @@ const BookingDetails = () => {
                         handleGuestChange(index, "lastName", e.target.value)
                       }
                       placeholder="Last Name *"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full border !border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
@@ -850,7 +861,7 @@ const BookingDetails = () => {
                         handleGuestChange(index, "email", e.target.value)
                       }
                       placeholder="Email (Optional)"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full border !border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
@@ -862,7 +873,7 @@ const BookingDetails = () => {
                         handleGuestChange(index, "phone", e.target.value)
                       }
                       placeholder="Phone Number *"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full border !border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
@@ -908,7 +919,7 @@ const BookingDetails = () => {
           </div>
           <button
             onClick={() => navigate("/login")}
-            className="bg-white text-blue-600 font-semibold py-2 px-6 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap shadow-sm border border-gray-200"
+            className="!bg-white text-blue-600 font-semibold py-2 px-6 rounded-lg hover:!bg-gray-50 transition-colors whitespace-nowrap shadow-sm border border-gray-200"
           >
             Login / Sign Up
           </button>

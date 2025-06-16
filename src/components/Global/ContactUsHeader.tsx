@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const ContactUsHeader = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // Trigger entrance animations
@@ -17,7 +20,10 @@ const ContactUsHeader = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isMobileMenuOpen &&
-        !(event.target as Element).closest(".mobile-menu-container")
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(event.target as Node)
       ) {
         setIsMobileMenuOpen(false);
       }
@@ -43,7 +49,7 @@ const ContactUsHeader = () => {
     { name: "Facilities", path: "/facilities" },
     { name: "Rooms", path: "/rooms" },
     { name: "Contact Us", path: "/contact" },
-    { name: "SingUp", path: "/register" },
+    { name: "Sign Up", path: "/register" },
   ];
 
   // Check if current path matches navigation item
@@ -51,14 +57,14 @@ const ContactUsHeader = () => {
     return location.pathname === path;
   };
 
-  // Toggle mobile menu
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
   };
 
-  // Close mobile menu when a link is clicked
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
+  const toggleMobileMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -116,15 +122,14 @@ const ContactUsHeader = () => {
 
             {/* Mobile Menu Button */}
             <div
-              className={`md:hidden transform transition-all duration-1000 delay-200 mobile-menu-container ${
-                isVisible
-                  ? "translate-y-0 opacity-100"
-                  : "-translate-y-10 opacity-0"
+              className={`md:hidden transform transition-all duration-1000 delay-200 ${
+                isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
               }`}
             >
               <button
+                ref={menuButtonRef}
                 onClick={toggleMobileMenu}
-                className="!text-white p-2 rounded-lg transition-colors duration-300 hover:bg-white/20"
+                className="!text-white !bg-black p-2 rounded-lg transition-colors duration-300 hover:bg-white/20"
                 aria-label="Toggle mobile menu"
               >
                 {isMobileMenuOpen ? (
@@ -133,30 +138,32 @@ const ContactUsHeader = () => {
                   <Menu className="w-6 h-6" />
                 )}
               </button>
-
-              {/* Mobile Menu Dropdown */}
-              {isMobileMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 bg-black/90 backdrop-blur-md rounded-lg min-w-[200px] shadow-2xl border border-white/20 z-50">
-                  <div className="py-2">
-                    {navigationItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        to={item.path}
-                        onClick={closeMobileMenu}
-                        className={`block px-6 py-3 text-white font-medium tracking-wide transition-all duration-300 hover:bg-amber-400/20 hover:text-amber-400 border-l-4 border-transparent ${
-                          isActivePath(item.path)
-                            ? "bg-amber-400/10 border-amber-400 text-amber-400"
-                            : "hover:border-amber-400"
-                        }`}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
+
+          {/* Mobile Menu Dropdown - Full Screen */}
+          {isMobileMenuOpen && (
+            <div 
+              ref={mobileMenuRef}
+              className="md:hidden fixed inset-0 !bg-black/95 backdrop-blur-md z-40 mt-16 overflow-y-auto"
+            >
+              <div className="flex flex-col space-y-1 pt-4 pb-8">
+                {navigationItems.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => handleNavigation(item.path)}
+                    className={`px-8 py-4 text-lef !bg-black text-white text-lg font-medium tracking-wide transition-all duration-300 ${
+                      isActivePath(item.path)
+                        ? "!bg-amber-400/10 text-amber-400"
+                        : "hover:!bg-amber-400/10 hover:text-amber-400"
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </nav>
 
         {/* Contact Header Content */}

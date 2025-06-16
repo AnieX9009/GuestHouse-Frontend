@@ -1,7 +1,7 @@
-import { BedDouble, Users, X,  ChevronLeft, ChevronRight, Heart, Share2, MapPin, Wifi, Utensils, Car, Tv, Dumbbell, Droplet, Snowflake, Sun } from "lucide-react";
+import { BedDouble, Users, X, ChevronLeft, ChevronRight, Heart, Share2, MapPin, Wifi, Utensils, Car, Tv, Dumbbell, Droplet, Snowflake, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import  { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const RoomDetailsPage = () => {
@@ -9,7 +9,18 @@ const RoomDetailsPage = () => {
   const [currentGalleryImage, setCurrentGalleryImage] = useState(0);
   const [likedRooms, setLikedRooms] = useState<number[]>([]);
   const navigate = useNavigate();
+  const { hash } = useLocation();
 
+  useEffect(() => {
+    if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView();
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [hash]);
   const room = {
     id: 0,
     title: "Deluxe Single Room",
@@ -102,13 +113,13 @@ const RoomDetailsPage = () => {
   };
 
   const nextGalleryImage = () => {
-    setCurrentGalleryImage((prev) => 
+    setCurrentGalleryImage((prev) =>
       prev === room.images.length - 1 ? 0 : prev + 1
     );
   };
 
   const prevGalleryImage = () => {
-    setCurrentGalleryImage((prev) => 
+    setCurrentGalleryImage((prev) =>
       prev === 0 ? room.images.length - 1 : prev - 1
     );
   };
@@ -145,13 +156,13 @@ const RoomDetailsPage = () => {
             </div>
           </div>
           <div className="flex space-x-3 mt-4 md:mt-0">
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2 !bg-white">
               <Share2 className="w-4 h-4" />
               <span>Share</span>
             </Button>
-            <Button 
-              variant="outline" 
-              className={`flex items-center gap-2 ${likedRooms.includes(room.id) ? '!text-red-500' : ''}`}
+            <Button
+              variant="outline"
+              className={`flex items-center gap-2 !bg-white ${likedRooms.includes(room.id) ? '!text-red-500' : ''}`}
               onClick={() => toggleLike(room.id)}
             >
               <Heart className={`w-4 h-4 ${likedRooms.includes(room.id) ? 'fill-current' : ''}`} />
@@ -167,7 +178,7 @@ const RoomDetailsPage = () => {
             {/* Image Gallery */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
               {/* Main image */}
-              <div 
+              <div
                 className="sm:col-span-2 row-span-2 relative group cursor-pointer rounded-xl overflow-hidden"
                 onClick={() => openGallery(0)}
               >
@@ -181,7 +192,7 @@ const RoomDetailsPage = () => {
 
               {/* Secondary images */}
               {[1, 2, 3].map((index) => (
-                <div 
+                <div
                   key={index}
                   className="relative group cursor-pointer rounded-xl overflow-hidden"
                   onClick={() => openGallery(index)}
@@ -214,7 +225,7 @@ const RoomDetailsPage = () => {
             {/* Room Details */}
             <div className="!bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-xl font-semibold !text-gray-900 mb-4">Room Details</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Layout */}
                 <div>
@@ -294,7 +305,7 @@ const RoomDetailsPage = () => {
                   </ul>
                 </div>
 
-                <Button 
+                <Button
                   onClick={() => navigate("/booknow")}
                   className="w-full py-6 text-lg font-medium bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900"
                 >
@@ -382,7 +393,7 @@ const RoomDetailsPage = () => {
                     {/* Like Button */}
                     <button
                       onClick={() => toggleLike(room.id)}
-                      className={`absolute top-3 right-3 p-2 rounded-full ${likedRooms.includes(room.id) ? 'text-red-500 bg-white' : 'text-gray-400 bg-white'}`}
+                      className={`absolute top-3 right-3 p-2 rounded-full ${likedRooms.includes(room.id) ? '!text-red-500 !bg-white' : 'text-gray-400 bg-white'}`}
                     >
                       <Heart className={`w-5 h-5 ${likedRooms.includes(room.id) ? 'fill-current' : ''}`} />
                     </button>
@@ -417,10 +428,10 @@ const RoomDetailsPage = () => {
                         <span className="text-lg font-bold !text-gray-900">{room.price}</span>
                         <span className="text-sm !text-gray-500 ml-1 line-through">{room.originalPrice}</span>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        className="!text-blue-600 !border-blue-600 hover:bg-blue-50"
-                        // onClick={() => navigate(`/rooms/${room.id}`)}
+                      <Button
+                        variant="outline"
+                        className="!text-blue-600 !border-blue-600 hover:!bg-blue-50"
+                      // onClick={() => navigate(`/rooms/${room.id}`)}
                       >
                         View Details
                       </Button>
@@ -436,13 +447,13 @@ const RoomDetailsPage = () => {
       {/* Image Gallery Modal */}
       <AnimatePresence>
         {showGallery && (
-          <motion.div 
+          <motion.div
             className="fixed inset-0 !bg-black bg-opacity-30  z-50 flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <button 
+            <button
               onClick={closeGallery}
               className="absolute top-6 right-6 !text-black hover:!text-gray-300 transition-colors"
             >
