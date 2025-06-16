@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { FiArrowLeft, FiEye, FiEyeOff, FiUser, FiMail, FiPhone, FiGlobe, FiLock } from 'react-icons/fi';
 import type {  FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,6 +27,7 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
   // Handle form submission
   console.log(formData);
 };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col md:flex-row">
@@ -217,7 +220,7 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Already have an account?{' '}
-                <a href="/login" className="text-blue-600 font-medium hover:underline">
+                <a onClick={() => navigate('/login')} className="text-blue-600 font-medium hover:underline">
                   Log In
                 </a>
               </p>
