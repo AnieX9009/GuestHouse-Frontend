@@ -10,7 +10,7 @@ import RoomsAndRatesPage from "./pages/RoomsAndRatesPage";
 import ContactPage from "./pages/ContactPage";
 import ContactUsHeader from "./components/Global/ContactUsHeader";
 import RoomDetailsPage from "./pages/RoomDetails";
-import RoomDetailHeader from "./components/Global/RoomDetailHeader";
+// import RoomDetailHeader from "./components/Global/RoomDetailHeader";
 import AboutHeader from "./components/Global/AboutHeader";
 import About from "./pages/About";
 import Register from "./pages/Register";
@@ -18,16 +18,12 @@ import Login from "./pages/login";
 import BookNowHeader from "./components/Global/BookNowHeader";
 import BookingDetails from "./pages/Booknow";
 import HotelAdminDashboard from "./pages/HotelAdminDashboard";
+import { AuthProvider } from "./context/AuthContext"; // Import the AuthProvider
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const router = createBrowserRouter([
-  {
-    path: "/AdminRoute",
-    element: (
-      <div className="w-screen min-h-screen flex flex-col">
-        <HotelAdminDashboard />
-      </div>
-    ),
-  },
+
   {
     path: "/",
     element: (
@@ -84,7 +80,7 @@ const router = createBrowserRouter([
     path: "/RoomDetails",
     element: (
       <div className="w-screen min-h-screen flex flex-col">
-        <RoomDetailHeader />
+        {/* <RoomDetailHeader /> */}
         <RoomDetailsPage />
         <Footer />
       </div>
@@ -136,10 +132,38 @@ const router = createBrowserRouter([
       </div>
     ),
   },
+    {
+    path: "/forget-password",
+    element: (
+      <div className="w-screen min-h-screen flex flex-col">
+        <ForgotPassword />
+      </div>
+    )
+  },
+      {
+    path: "//reset-password/:token",
+    element: (
+      <div className="w-screen min-h-screen flex flex-col">
+        <ResetPassword />
+      </div>
+    )
+  },
+
+
+    {
+    path: "/AdminRoute",
+    element: (
+      <div className="w-screen min-h-screen flex flex-col">
+        <HotelAdminDashboard />
+      </div>
+    ),
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider> {/* Wrap the entire app with AuthProvider */}
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

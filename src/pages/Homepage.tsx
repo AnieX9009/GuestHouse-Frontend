@@ -1,20 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const goToRoom = () => {
     navigate('/rooms');
   };
 
+  const goToBookNow = () => {
+    if (isAuthenticated) {
+      navigate('/booknow');
+    } else {
+      navigate('/login');
+    }
+  };
+
   return (
-    <div className="bg-white py-16 px-6">
+    <div className="!bg-white py-16 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <p className="text-gray-600 text-3xl mb-2">
+          <p className="!text-gray-600 text-3xl mb-2">
             All our room types are including complementary breakfast
           </p>
         </div>
@@ -22,7 +32,7 @@ const Homepage = () => {
         {/* Luxury redefined section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16 items-center">
           <div className="order-2 lg:order-1">
-            <div className="bg-white px-8 border-l-2 border-[#14274A]">
+            <div className="!bg-white px-8 border-l-2 border-[#14274A]">
               <h2 className="text-3xl font-bold !text-gray-800 mb-4 leading-tight">
                 Luxury redefined
               </h2>
@@ -31,7 +41,10 @@ const Homepage = () => {
                 for leisure. Take your mind off the day-to-day of home life and
                 find a private paradise for yourself.
               </p>
-              <Button onClick={goToRoom} className="!bg-[#E0B973] hover:!bg-amber-600 !text-white !px-6 !py-3 rounded font-medium transition-colors">
+              <Button 
+                onClick={goToRoom} 
+                className="!bg-[#E0B973] hover:!bg-amber-600 !text-white !px-6 !py-3 rounded font-medium transition-colors"
+              >
                 EXPLORE
               </Button>
             </div>
@@ -46,20 +59,22 @@ const Homepage = () => {
         </div>
 
         {/* Leave your worries section */}
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16 items-center">
           <div className="order-2 lg:order-1">
-            <div className="bg-white px-8 border-l-2 border-[#14274A]">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4 leading-tight">
+            <div className="!bg-white px-8 border-l-2 border-[#14274A]">
+              <h2 className="text-3xl font-bold !text-gray-800 mb-4 leading-tight">
                 Leave your worries in the sand
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-4">
+              <p className="!text-gray-600 leading-relaxed mb-4">
                 We love life at the beach. Being close to the ocean with access
                 to endless sandy beach ensures a relaxed state of mind. It seems
                 like time stands still watching the ocean.
               </p>
-              <Button className="!bg-[#E0B973] hover:!bg-amber-600 !text-white !px-6 !py-3 rounded font-medium transition-colors">
-                EXPLORE
+              <Button 
+                onClick={goToBookNow}
+                className="!bg-[#E0B973] hover:!bg-amber-600 !text-white !px-6 !py-3 rounded font-medium transition-colors"
+              >
+                {isAuthenticated ? 'BOOK NOW' : 'SIGN IN TO BOOK'}
               </Button>
             </div>
           </div>
@@ -74,15 +89,15 @@ const Homepage = () => {
 
         {/* Testimonials section */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-12">
+          <h2 className="text-3xl font-bold !text-gray-800 mb-12">
             Testimonials
           </h2>
 
           <div className="max-w-2xl mx-auto">
-            <p className="text-xl text-gray-700 italic mb-6 leading-relaxed">
+            <p className="text-xl !text-gray-700 italic mb-6 leading-relaxed">
               "Calm, Serene, Retro - What a way to relax and enjoy"
             </p>
-            <p className="text-gray-600 mb-8">Mr. and Mrs. Baxter, UK</p>
+            <p className="!text-gray-600 mb-8">Mr. and Mrs. Baxter, UK</p>
 
             {/* Navigation arrows */}
             <div className="flex justify-center space-x-4">

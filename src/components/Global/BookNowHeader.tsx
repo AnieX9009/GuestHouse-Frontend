@@ -1,14 +1,19 @@
+// BookNowHeader.tsx
 import { useState, useEffect, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const BookNowHeader = () => {
+  const { isAuthenticated, user, logout } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Trigger entrance animations
@@ -18,6 +23,7 @@ const BookNowHeader = () => {
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // For mobile menu
       if (
         isMobileMenuOpen &&
         mobileMenuRef.current &&
@@ -27,9 +33,18 @@ const BookNowHeader = () => {
       ) {
         setIsMobileMenuOpen(false);
       }
+
+      // For user dropdown
+      if (
+        isUserDropdownOpen &&
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
     };
 
-    if (isMobileMenuOpen) {
+    if (isMobileMenuOpen || isUserDropdownOpen) {
       document.addEventListener("click", handleClickOutside);
       document.body.style.overflow = 'hidden';
     } else {
@@ -40,7 +55,7 @@ const BookNowHeader = () => {
       document.removeEventListener("click", handleClickOutside);
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, isUserDropdownOpen]);
 
   // Navigation items with their corresponding routes
   const navigationItems = [
@@ -49,7 +64,7 @@ const BookNowHeader = () => {
     { name: "Facilities", path: "/facilities" },
     { name: "Rooms", path: "/rooms" },
     { name: "Contact Us", path: "/contact" },
-    { name: "Sign Up", path: "/register" }, // Fixed typo from "SingUp" to "Sign Up"
+    { name: "Sign Up", path: "/register", hideWhenAuthenticated: true },
   ];
 
   // Check if current path matches navigation item
@@ -65,6 +80,11 @@ const BookNowHeader = () => {
   const toggleMobileMenu = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleUserDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
   return (
@@ -106,18 +126,49 @@ const BookNowHeader = () => {
               }`}
             >
               {navigationItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`!text-white font-medium tracking-wide transition-all duration-300 hover:text-amber-400 hover:scale-105 relative pb-2 ${
-                    isActivePath(item.path)
-                      ? "border-b-2 border-white text-amber-400"
-                      : "hover:border-b-2 hover:border-amber-400"
-                  }`}
-                >
-                  {item.name}
-                </Link>
+                (!item.hideWhenAuthenticated || !isAuthenticated) && (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`!text-white font-medium tracking-wide transition-all duration-300 hover:text-amber-400 hover:scale-105 relative pb-2 ${
+                      isActivePath(item.path)
+                        ? "border-b-2 border-white text-amber-400"
+                        : "hover:border-b-2 hover:border-amber-400"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
+
+              {isAuthenticated && (
+                <div className="relative" ref={userDropdownRef}>
+                  <button
+                    onClick={toggleUserDropdown}
+                    className="flex items-center !text-black font-medium tracking-wide transition-all duration-300 hover:text-amber-400 hover:scale-105 relative pb-2"
+                  >
+                    {user?.name || "Account"}
+                    <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {isUserDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg !bg-white ring-1 ring-black ring-opacity-5 z-50">
+                      <div className="py-1">
+                        <button
+                          onClick={() => {
+                            logout();
+                            setIsUserDropdownOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:!bg-gray-100"
+                        >
+                          <LogOut className="mr-2 h-4 w-4" />
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -129,7 +180,7 @@ const BookNowHeader = () => {
               <button
                 ref={menuButtonRef}
                 onClick={toggleMobileMenu}
-                className="!text-white !bg-black p-2 rounded-lg transition-colors duration-300 hover:bg-white/20"
+                className="!text-white !bg-black p-2 rounded-lg transition-colors duration-300 hover:!bg-white/20"
                 aria-label="Toggle mobile menu"
               >
                 {isMobileMenuOpen ? (
@@ -149,18 +200,37 @@ const BookNowHeader = () => {
             >
               <div className="flex flex-col space-y-1 pt-4 pb-8">
                 {navigationItems.map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => handleNavigation(item.path)}
-                    className={`px-8 py-4 text-left !bg-black text-white text-lg font-medium tracking-wide transition-all duration-300 ${
-                      isActivePath(item.path)
-                        ? "!bg-amber-400/10 text-amber-400"
-                        : "hover:!bg-amber-400/10 hover:text-amber-400"
-                    }`}
-                  >
-                    {item.name}
-                  </button>
+                  (!item.hideWhenAuthenticated || !isAuthenticated) && (
+                    <button
+                      key={item.name}
+                      onClick={() => handleNavigation(item.path)}
+                      className={`px-8 py-4 text-left !bg-black text-white text-lg font-medium tracking-wide transition-all duration-300 ${
+                        isActivePath(item.path)
+                          ? "!bg-amber-400/10 text-amber-400"
+                          : "hover:!bg-amber-400/10 hover:text-amber-400"
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  )
                 ))}
+
+                {isAuthenticated && (
+                  <>
+                    <div className="px-8 py-4 text-left !bg-black text-white text-lg font-medium tracking-wide">
+                      Welcome, {user?.name}
+                    </div>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className={`px-8 py-4 text-left !bg-black text-white text-lg font-medium tracking-wide transition-all duration-300 hover:!bg-amber-400/10 hover:text-amber-400`}
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}
