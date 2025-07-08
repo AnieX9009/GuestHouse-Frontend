@@ -5,7 +5,6 @@ import { FaStar, FaRegStar, FaCheck } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { addDays, format, differenceInDays } from "date-fns";
-import { useAuth } from "../context/AuthContext";
 
 type Guest = {
   title: "MR" | "MRS" | "MS" | "DR";
@@ -41,7 +40,6 @@ type HotelBooking = {
 
 const BookingDetails = () => {
   const navigate = useNavigate();
-  const auth = useAuth();
   const [nights, setNights] = useState<number>(1);
   const [guests, setGuests] = useState<Guest[]>([
     {
@@ -74,7 +72,6 @@ const BookingDetails = () => {
       window.scrollTo(0, 0);
     }
   }, [hash]);
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -147,6 +144,7 @@ const BookingDetails = () => {
   };
 
   const handleCheckInChange = (date: Date | null) => {
+    // Adjust checkout date if it's before or same as checkin date
     if (date) {
       setCheckInDate(date);
     }
@@ -222,76 +220,39 @@ const BookingDetails = () => {
     return finalPrice;
   };
 
-const createBooking = async () => {
-  // Validate guest details
-  const isValid = guests.every(
-    (guest) => guest.firstName && guest.lastName && guest.phone
-  );
+  const handlePayment = () => {
+    // Validate guest details before proceeding to payment
+    const isValid = guests.every(
+      (guest) => guest.firstName && guest.lastName && guest.phone
+    );
 
-  if (!isValid) {
-    alert("Please fill in all required guest details");
-    return;
-  }
-
-  if (!auth.isAuthenticated || !auth.user) {
-    alert('You must be logged in to book a room');
-    navigate('/login');
-    return;
-  }
-
-  // Ensure the user ID is properly formatted
-  if (!auth.user._id || typeof auth.user._id !== 'string') {
-    alert('Invalid user information');
-    return;
-  }
-
-  const bookingData = {
-    userId: auth.user._id,
-    roomNumber: hotelBookings[0].roomType,
-    guests: guests.map(guest => ({
-      title: guest.title,
-      firstName: guest.firstName,
-      lastName: guest.lastName,
-      email: guest.email || `${guest.firstName}.${guest.lastName}@example.com`, // fallback email
-      phoneNumber: guest.phone // match backend field name
-    })),
-    checkInDate: checkInDate.toISOString(),
-    checkOutDate: checkOutDate.toISOString(),
-    totalPrice: calculateFinalPrice()
-  };
-
-  try {
-    setIsLoading(true);
-    const response = await fetch('http://localhost:5000/api/bookings/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${auth.token}`
-      },
-      body: JSON.stringify(bookingData)
-    });
-
-    const responseData = await response.json();
-    
-    if (!response.ok) {
-      // Log detailed validation errors if available
-      if (responseData.errors) {
-        console.error('Validation errors:', responseData.errors);
-        alert(`Validation failed: ${responseData.errors.map((e: any) => e.msg).join(', ')}`);
-      } else {
-        throw new Error(responseData.message || 'Booking failed');
-      }
+    if (!isValid) {
+      alert("Please fill in all required guest details");
       return;
     }
 
-    // Rest of your success handling...
-  } catch (error) {
-    console.error('Booking error:', error);
-    alert(error instanceof Error ? error.message : 'Failed to create booking. Please try again.');
-  } finally {
-    setIsLoading(false);
-  }
-};
+    // Proceed to payment
+    navigate("/payment", {
+      state: {
+        bookingDetails: {
+          ...hotelBookings[0],
+          checkInDate: format(checkInDate, "EEE dd MMM yyyy"),
+          checkOutDate: format(checkOutDate, "EEE dd MMM yyyy"),
+          nights,
+          guests,
+          priceBreakup: {
+            basePrice: hotelBookings[0].basePricePerNight * nights,
+            hotelTaxes:
+              hotelBookings[0].basePricePerNight *
+              nights *
+              hotelBookings[0].hotelTaxesPercentage,
+            discount: appliedCoupon ? calculateFinalPrice() - totalPrice : 0,
+            total: calculateFinalPrice(),
+          },
+        },
+      },
+    });
+  };
 
   const renderStars = (count: number) => {
     return Array(5)
@@ -602,7 +563,7 @@ const createBooking = async () => {
                     Refund is not applicable for this booking
                   </p>
                   <button
-                    className="text-blue-600 !bg- hover:text-blue-800 text-sm font-medium mt-2 ml-7 flex items-center"
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 ml-7 flex items-center"
                     aria-label="View cancellation policy"
                   >
                     View cancellation policy
@@ -764,12 +725,11 @@ const createBooking = async () => {
                 </div>
 
                 <button
-                  onClick={createBooking}
-                  disabled={isLoading}
-                  className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-[1.01] ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  onClick={handlePayment}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-[1.01]"
                   aria-label="Proceed to payment"
                 >
-                  {isLoading ? 'Processing...' : 'Proceed to Payment'}
+                  Proceed to Payment
                 </button>
 
                 <div className="mt-3 sm:mt-4 flex items-center text-xs text-gray-500">
@@ -814,6 +774,7 @@ const createBooking = async () => {
               </svg>
               Guest Details
             </h2>
+
 
             {guests.map((guest, index) => (
               <div

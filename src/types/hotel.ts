@@ -1,37 +1,17 @@
-export interface Booking {
-  id: string;
-  guestName: string;
-  email: string;
-  phone: string;
-  roomType: string;
-  roomNumber: string;
-  checkIn: string;
-  checkOut: string;
-  guests: number;
-  status: 'confirmed' | 'pending' | 'cancelled' | 'checked-in' | 'checked-out';
-  totalAmount: number;
-  specialRequests?: string;
-}
-
+// types/hotel.ts
 export interface Room {
-  id: string;
-  number: string;
-  type: string;
-  status: 'available' | 'occupied' | 'maintenance' | 'cleaning';
-  price: number;
+  _id: string;
+  roomNumber: string;
+  roomType: string;
+  status: 'Available' | 'occupied' | 'maintenance' | 'reserved'; // Enum values
+  pricePerNight: number;
   amenities: string[];
-  
+  photos: string[]; // Changed from 'photo' to 'photos' array
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-export interface Guest {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  totalBookings: number;
-  totalSpent: number;
-  lastVisit: string;
-  vipStatus: boolean;
-}
-
-export type TabType = 'overview' | 'bookings' | 'rooms' | 'guests';
+export interface RoomWithImages extends Room {
+  images: File[];
+  imagePreviews: string[];
+} 

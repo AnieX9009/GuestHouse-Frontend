@@ -21,6 +21,8 @@ import HotelAdminDashboard from "./pages/HotelAdminDashboard";
 import { AuthProvider } from "./context/AuthContext"; // Import the AuthProvider
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import RoomDetailHeader from "./components/Global/RoomDetailHeader";
 
 const router = createBrowserRouter([
 
@@ -77,14 +79,25 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/RoomDetails",
+    path: "/RoomDetails/:id",
     element: (
       <div className="w-screen min-h-screen flex flex-col">
-        {/* <RoomDetailHeader /> */}
+        <RoomDetailHeader />
         <RoomDetailsPage />
         <Footer />
       </div>
     ),
+    errorElement: <ErrorBoundary />,
+
+    // Optional: Add a loader to check if room exists
+    loader: async ({ params }) => {
+      const response = await fetch(`http://localhost:5000/api/rooms/${params.id}`);
+      if (!response.ok) {
+        throw new Response("Room not found", { status: 404 });
+      }
+      return response.json();
+    }
+
   },
   {
     path: "/About",
@@ -107,7 +120,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/booknow",
+    path: "/booknow/${room._id}",
     element: (
       <div className="w-screen min-h-screen flex flex-col">
         <BookNowHeader />
@@ -132,7 +145,7 @@ const router = createBrowserRouter([
       </div>
     ),
   },
-    {
+  {
     path: "/forget-password",
     element: (
       <div className="w-screen min-h-screen flex flex-col">
@@ -140,7 +153,7 @@ const router = createBrowserRouter([
       </div>
     )
   },
-      {
+  {
     path: "//reset-password/:token",
     element: (
       <div className="w-screen min-h-screen flex flex-col">
@@ -150,7 +163,7 @@ const router = createBrowserRouter([
   },
 
 
-    {
+  {
     path: "/AdminRoute",
     element: (
       <div className="w-screen min-h-screen flex flex-col">
